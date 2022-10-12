@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@mui/material";
 import { Professor } from "../../@types/professor";
 import {
@@ -12,9 +11,11 @@ import {
 	Valor,
 } from "./Lista.style";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+import { FormatadorService } from "../../services/FormatadorService";
 
 interface ListaProps {
 	professores: Professor[];
+	onSelect: (professor: Professor) => void;
 }
 
 const Lista = (props: ListaProps) => {
@@ -24,22 +25,23 @@ const Lista = (props: ListaProps) => {
 				<ListaStyled>
 					{props.professores.map((professor) => (
 						<ItemLista key={professor.id}>
-							<Foto src={professor.avatar} />
+							<Foto src={professor.foto} />
 							<Informacoes>
-								<Nome>{professor.name}</Nome>
-								<Descricao>{professor.description}</Descricao>
+								<Nome>{professor.nome}</Nome>
 								<Valor>
 									{" "}
-									{professor.price.toLocaleString("pt-BR", {
-										minimumFractionDigits: 2,
-										style: "currency",
-										currency: "BRL",
-									})}{" "}
-									por hora
+									{FormatadorService.valorMonetario(professor.valor_hora)} por
+									hora
 								</Valor>
+								<Descricao>
+									{FormatadorService.limitarTexto(professor.descricao, 200)}
+								</Descricao>
 							</Informacoes>
-							<Button sx={{ width: "70%" }}>
-								Agendar aula com {professor.name}
+							<Button
+								onClick={() => props.onSelect(professor)}
+								sx={{ width: "70%" }}
+							>
+								Agendar aula com {professor.nome}
 							</Button>
 						</ItemLista>
 					))}
